@@ -1,0 +1,11 @@
+{
+  "uid": "1dc46727-9c5a-429f-8769-a9f21ede77bd",
+  "name": "Cabin Grabber",
+  "exclude": [
+    "venv",
+    ".venv",
+    "__pycache__",
+    ".databutton",
+    ".git"
+  ]
+}

@@ -1,0 +1,6 @@
+.databutton
+data/generated
+data/predicted
+*.pyc
+notebooks/experimenting.ipynb
+notebooks/sendgrid_test.ipynb

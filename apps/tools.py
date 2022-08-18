@@ -17,6 +17,6 @@ def list_of_dates_to_date_ranges(data):
             ranges.append(get_range_string(dg[fra], dg[to]))
             fra = ix
 
-    ranges.append(get_range_string(dg[fra], dg[to]))
+    ranges.append(get_range_string(dg[fra], dg[to+1]))
     
     return ranges

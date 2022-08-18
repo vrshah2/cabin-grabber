@@ -5,24 +5,25 @@ import numpy as np
 import pandas as pd
 import requests as rq
 from .tools import list_of_dates_to_date_ranges
+import datetime
 from email_validator import validate_email
 
 DATA_KEY = 'user-subscriptions'
 
-month_lookup = {
-    'January':1,
-    'February':2,
-    'March':3,
-    'April':4,
-    'May':5,
-    'June':6,
-    'July':7,
-    'August':8,
-    'September':9,
-    'October':10,
-    'November':11,
-    'December':12
-}
+#month_lookup = {
+    #'January':1,
+    #'February':2,
+    #'March':3,
+    #'April':4,
+    #'May':5,
+    #'June':6,
+    #'July':7,
+    #'August':8,
+    #'September':9,
+    #'October':10,
+    #'November':11,
+    #'December':12
+#}
 
 @db.apps.streamlit('/apps/cabin-grabber',name="Cabin Grabber")
 def cabin_grabber():
@@ -32,8 +33,15 @@ def cabin_grabber():
     st.subheader('First, Grab a cab(in)')
     cabin_selection = st.text_input(label="Enter the cabin's Visbook URL (e.g. https://reservations.visbook.com/5471)")
     st.caption('Note: To get the Visbook URL for a cabin, find the cabin on UT.no and click Bestill overnatting')
-    st.subheader('Which months are you looking for availability in, good sir/mlady? 🎩')
-    months = st.multiselect('Select the month(s)', ['January','February','March','April','May','June','July','August','September','October','November','December'])
+    st.subheader('What dates are you interested in monitoring?')
+    startDate = st.date_input(
+        'From',
+    )
+    endDate = st.date_input(
+        'To',
+    )
+    #st.subheader('Which months are you looking for availability in, good sir/mlady? 🎩')
+    #months = st.multiselect('Select the month(s)', ['January','February','March','April','May','June','July','August','September','October','November','December'])
     st.caption('Note: You will get an email whenever your cabin has avaibility in the range you selected')
     st.subheader('Last step, can I haz your email?')
     email_input = st.text_input(label='Email address')
@@ -47,7 +55,9 @@ def cabin_grabber():
             df = db.storage.dataframes.get(DATA_KEY)
             df = df.append({
                 'email': email,
-                'months': months,
+                'startDate': startDate,
+                'endDate': endDate,
+                #'months': months,
                 'cabin_url': cabin_selection
             }, ignore_index=True)
             db.storage.dataframes.put(df, DATA_KEY)

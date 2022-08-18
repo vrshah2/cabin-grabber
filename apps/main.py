@@ -4,6 +4,7 @@ import databutton as db
 import numpy as np
 import pandas as pd
 import requests as rq
+from .tools import list_of_dates_to_date_ranges
 import datetime
 from email_validator import validate_email
 
@@ -103,10 +104,12 @@ def check_availability():
                             is_available = product['availability']['available']
                             if is_available:
                                 available_days.append(date)
+            
+            available_ranges = list_of_dates_to_date_ranges(available_days)
             summary.append({
                 "name": hytte["name"],
                 "id": hytte["id"],
-                "available_days": available_days,
+                "available_days": available_ranges,
             })
         df = pd.DataFrame(summary)
         html = df.to_html()

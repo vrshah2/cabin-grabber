@@ -1,7 +1,7 @@
 import pandas as pd
 import requests as rq
 import databutton as db
-from datetime import datetime
+from datetime import datetime, date
 #
 #  *** CONVERT LIST OF DATES TO LIST OF DATE RANGES ***
 #
@@ -14,7 +14,7 @@ def get_range_string(t_from, t_to):
 
 
 def list_of_dates_to_date_ranges(data):
-    dg = pd.to_datetime(data)
+    dg = pd.to_datetime(data).reset_index(drop=True)
     ranges = []
     fra = 0
     for ix in range(1, len(dg)):
@@ -29,9 +29,10 @@ def list_of_dates_to_date_ranges(data):
 
 
 def filter_list_of_dates(datelist, start_date, end_date):
-    dg = pd.to_datetime(datelist)
-    start = pd.to_datetime(start_date)
-    end   = pd.to_datetime(end_date)
+    dg = pd.Series([pd.to_datetime(s).tz_localize(None) for s in datelist])
+    start = pd.to_datetime(start_date).tz_localize(None)
+    end   = pd.to_datetime(end_date).tz_localize(None)
+    
 
     return dg[((dg >= start) & (dg <= end))]
 
@@ -39,9 +40,8 @@ def filter_list_of_dates(datelist, start_date, end_date):
 
 
 def get_months(start, end):
-    print(start)
-    month_start = int(pd.to_datetime(start).month)
-    month_end   = int(pd.to_datetime(end).month)
+    month_start = start.month
+    month_end   = end.month
 
     return list(range(month_start, month_end+1))
     

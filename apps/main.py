@@ -23,8 +23,6 @@ def cabin_grabber():
 
     startDate = st.date_input('From', min_value=datetime.datetime.today())
     endDate = st.date_input('To', min_value=datetime.datetime.today())
-    #st.subheader('Which months are you looking for availability in, good sir/mlady? 🎩')
-    #months = st.multiselect('Select the month(s)', ['January','February','March','April','May','June','July','August','September','October','November','December'])
     st.caption('Note: You will get an email whenever your cabin has avaibility in the range you selected')
     st.subheader('Last step, can I haz your email?')
 
@@ -64,9 +62,13 @@ def check_availability():
         end_date   = row['endDate']
         locationId = row['cabin_url'].split('/')[-1]
         
+        print('Fetching summary')
         summary = get_availability(locationId, start_date, end_date)
+        print('Done')
         df = pd.DataFrame(summary)
+        df['url'] = row['cabin_url']
         html = df.to_html()
+        print('sending email')
         db.notify.email(
             to=[row.email],
             subject="Fresh results from cabin grabber",

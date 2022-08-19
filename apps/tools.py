@@ -1,3 +1,4 @@
+import base64
 import pandas as pd
 import requests as rq
 import databutton as db
@@ -106,3 +107,39 @@ def get_availability(locationId, start_date, end_date):
     return summary 
 
 
+#
+# Simply not-that-secure encryption :) 
+#
+def encode(key, string):
+    encoded_chars = []
+    for i in range(len(string)):
+        key_c = key[i % len(key)]
+        encoded_c = chr(ord(string[i]) + ord(key_c) % 256)
+        encoded_chars.append(encoded_c)
+    encoded_string = "".join(encoded_chars)
+    print(encoded_string)
+    return base64.urlsafe_b64encode(encoded_string.encode())
+
+
+
+def dencode(key, string):
+    string = base64.urlsafe_b64decode(string).decode()
+    dencoded_chars = []
+    for i in range(len(string)):
+        key_c = key[i % len(key)]
+        dencoded_c = chr(ord(string[i]) - ord(key_c) % 256)
+        dencoded_chars.append(dencoded_c)
+    dencoded_string = "".join(dencoded_chars)
+    return dencoded_string
+
+
+
+def encrypt_message(string):
+    key = db.secrets.get('cryptokey')
+    return encode(key, string)
+
+
+
+def decrypt_message(string):
+    key = db.secrets.get('cryptokey')
+    return dencode(key, string)

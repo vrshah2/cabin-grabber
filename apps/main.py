@@ -4,7 +4,7 @@ import databutton as db
 import numpy as np
 import pandas as pd
 import requests as rq
-from .tools import get_availability
+from .tools import get_availability, encrypt_message, decrypt_message
 import datetime
 from email_validator import validate_email
 
@@ -37,7 +37,7 @@ def cabin_grabber():
         if email is not None:
             df = db.storage.dataframes.get(DATA_KEY)
             df = df.append({
-                'email': email,
+                'email': encrypt_message(email_input),
                 'startDate': startDate,
                 'endDate': endDate,
                 #'months': months,
@@ -70,7 +70,7 @@ def check_availability():
         html = df.to_html()
         print('sending email')
         db.notify.email(
-            to=[row.email],
+            to=[decrypt_message(row.email)],
             subject="Fresh results from cabin grabber",
             content_html=html
         )

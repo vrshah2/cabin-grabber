@@ -3,3 +3,4 @@ email-validator
 requests
 pandas
 numpy
+base64
